@@ -1,0 +1,50 @@
+Sub CombineData()
+
+Application.ScreenUpdating = False
+Dim WB1 As Workbook
+Set WB1 = ActiveWorkbook
+
+Sheets(1).Select
+
+i = ActiveWorkbook.Sheets.Count
+
+icol = 32 'Amend this if you need to extend to a different column
+
+ActiveSheet.Range(Cells(10, 1), Cells(10, icol)).Copy 'Selects the column headings
+
+Workbooks.Add  'Adds a new workbook
+Dim WB2 As Workbook
+Set WB2 = ActiveWorkbook
+Range("A1").Select 'Change this range if you need to data pasted into a different range
+ ActiveSheet.Paste
+ 
+WB1.Activate
+
+For x = 0 To i - 1
+
+Sheets(1).Select
+Worksheets(ActiveSheet.Index + x).Select
+
+irow = 11 'Amend to select data from a different row
+While Cells(irow + 1, 1) <> ""
+irow = irow + 1
+Wend
+
+ActiveSheet.Range(Cells(11, 1), Cells(irow, icol)).Copy
+
+WB2.Activate
+Range("A1").Select
+
+ If ActiveCell.Offset(1, 0) = "" Then
+    ActiveCell.Offset(1, 0).Select
+ Else
+    Selection.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+ End If
+ ActiveCell.PasteSpecial (xlPasteValues)
+
+WB1.Activate
+
+Next x
+
+End Sub
